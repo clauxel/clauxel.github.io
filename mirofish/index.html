@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MiroFish page map and AI scenario simulation guide</title>
+  <meta name="description" content="MiroFish page map for the MiroFish.work public routes, source repository, demo, and multi-agent scenario simulation workflow.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://clauxel.github.io/mirofish/">
+  <meta property="og:title" content="MiroFish page map and AI scenario simulation guide">
+  <meta property="og:description" content="Find the MiroFish workflow, hosted pages, source repository, demo, and scenario simulation routes from one public page.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://clauxel.github.io/mirofish/">
+  <meta property="og:image" content="https://mirofish.work/assets/examples/mirofish-environment-studio-clean.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172026;
+      --muted: #5d6872;
+      --line: #d9e2e7;
+      --paper: #f8faf8;
+      --panel: #ffffff;
+      --teal: #067a75;
+      --coral: #c7432e;
+      --gold: #a66b00;
+      --blue: #285ea8;
+      --shadow: 0 16px 40px rgba(23, 32, 38, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(248, 250, 248, 0.94);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    nav { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { font-weight: 800; letter-spacing: 0; text-decoration: none; font-size: 20px; }
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .nav-links a {
+      text-decoration: none;
+      border: 1px solid transparent;
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .nav-links a:hover { border-color: var(--line); color: var(--ink); background: #fff; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+      gap: 42px;
+      align-items: center;
+      padding: 64px 0 46px;
+    }
+    .eyebrow { color: var(--teal); font-weight: 800; text-transform: uppercase; font-size: 13px; letter-spacing: 0; }
+    h1 { font-size: 54px; line-height: 1.03; letter-spacing: 0; margin: 10px 0 18px; max-width: 850px; }
+    .lead { font-size: 20px; color: #34424b; margin: 0 0 24px; max-width: 720px; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 26px 0; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 750;
+    }
+    .btn.secondary { background: transparent; color: var(--ink); border-color: var(--line); }
+    .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 26px; }
+    .fact { border-top: 3px solid var(--teal); background: var(--panel); padding: 14px; box-shadow: var(--shadow); }
+    .fact:nth-child(2) { border-color: var(--gold); }
+    .fact:nth-child(3) { border-color: var(--coral); }
+    .fact b { display: block; font-size: 24px; }
+    .fact span { color: var(--muted); font-size: 13px; }
+    .product-shot {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+    .product-shot img { display: block; width: 100%; border-radius: 6px; aspect-ratio: 4 / 3; object-fit: cover; }
+    .caption { margin: 10px 2px 2px; color: var(--muted); font-size: 13px; }
+    .answer-band { border-block: 1px solid var(--line); background: #fff; }
+    .answer-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 32px; padding: 42px 0; align-items: start; }
+    h2 { font-size: 32px; line-height: 1.15; margin: 0 0 12px; letter-spacing: 0; }
+    h3 { font-size: 19px; margin: 0 0 8px; letter-spacing: 0; }
+    .answer-grid p, .intro p { color: #34424b; margin: 0 0 14px; }
+    .workflow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+    .step {
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--teal);
+      border-radius: 8px;
+      background: #fbfefd;
+      padding: 14px;
+      min-height: 128px;
+    }
+    .step:nth-child(2) { border-top-color: var(--blue); }
+    .step:nth-child(3) { border-top-color: var(--gold); }
+    .step:nth-child(4) { border-top-color: var(--coral); }
+    .step:nth-child(5) { border-top-color: #475569; }
+    .step b { display: block; margin-bottom: 6px; }
+    .step span { color: var(--muted); font-size: 13px; }
+    main { padding-bottom: 56px; }
+    .intro { padding: 42px 0 10px; }
+    .source-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .source-row a {
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 9px 11px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .link-section { padding: 34px 0 10px; }
+    .section-head {
+      display: grid;
+      grid-template-columns: 150px minmax(220px, 360px) 1fr;
+      gap: 18px;
+      align-items: start;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+    }
+    .section-head p { color: var(--teal); font-weight: 800; margin: 4px 0 0; }
+    .section-head span { color: var(--muted); }
+    .route-grid {
+      list-style: none;
+      padding: 0;
+      margin: 18px 0 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .route-grid a {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 10px;
+      min-height: 78px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      text-decoration: none;
+    }
+    .route-grid a:hover { border-color: var(--teal); box-shadow: 0 10px 24px rgba(6, 122, 117, 0.12); }
+    .route-grid span { font-weight: 800; overflow-wrap: anywhere; }
+    .route-grid b {
+      color: var(--blue);
+      font-size: 12px;
+      border: 1px solid #c8d7ec;
+      border-radius: 999px;
+      padding: 2px 7px;
+      height: max-content;
+    }
+    .faq {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .faq article { border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 18px; }
+    footer { border-top: 1px solid var(--line); padding: 24px 0 34px; color: var(--muted); font-size: 14px; }
+    @media (max-width: 900px) {
+      .hero, .answer-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 42px; }
+      .workflow, .route-grid, .faq { grid-template-columns: 1fr 1fr; }
+      .section-head { grid-template-columns: 1fr; gap: 6px; }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 24px, 1120px); }
+      nav { align-items: flex-start; flex-direction: column; padding: 14px 0; gap: 10px; }
+      h1 { font-size: 34px; }
+      .lead { font-size: 18px; }
+      .facts, .workflow, .route-grid, .faq { grid-template-columns: 1fr; }
+      .hero { padding-top: 36px; }
+    }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://clauxel.github.io/mirofish/","url":"https://clauxel.github.io/mirofish/","name":"MiroFish page map and scenario simulation guide","description":"A public MiroFish guide and page map that links to the MiroFish.work sitemap routes, source repository, and core scenario simulation workflow.","dateModified":"2026-09-02","inLanguage":"en","about":{"@type":"SoftwareApplication","name":"MiroFish","applicationCategory":"AI prediction engine","url":"https://mirofish.work","sameAs":["https://github.com/666ghj/MiroFish","https://mirofish.ai/","https://666ghj.github.io/mirofish-demo/"]}},{"@type":"FAQPage","@id":"https://clauxel.github.io/mirofish/#faq","mainEntity":[{"@type":"Question","name":"What is MiroFish?","acceptedAnswer":{"@type":"Answer","text":"MiroFish is a multi-agent scenario simulation and AI prediction workflow that turns seed material into graph context, simulated agents, reaction rounds, and a report for review."}},{"@type":"Question","name":"Where should readers start?","acceptedAnswer":{"@type":"Answer","text":"Readers who want a hosted product route can start at mirofish.work. Readers who want source-code context can inspect the 666ghj/MiroFish repository and the static demo linked from that repository."}}]}]}</script>
+</head>
+<body>
+  <header>
+    <nav class="shell" aria-label="Primary navigation">
+      <a class="brand" href="https://clauxel.github.io/mirofish/">MiroFish</a>
+      <div class="nav-links">
+        <a href="#workflow">Workflow</a>
+        <a href="#core">Page map</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://mirofish.work/" rel="noopener">mirofish.work</a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section class="shell hero">
+      <div>
+        <p class="eyebrow">AI scenario simulation page map</p>
+        <h1>MiroFish</h1>
+        <p class="lead">A focused guide to the MiroFish AI prediction workflow, with every public MiroFish.work page from the sitemap linked in one place.</p>
+        <div class="actions">
+          <a class="btn" href="https://mirofish.work/" rel="noopener">Open mirofish.work</a>
+          <a class="btn secondary" href="#core">Browse all pages</a>
+        </div>
+        <div class="facts" aria-label="MiroFish page facts">
+          <div class="fact"><b>111</b><span>public MiroFish.work routes linked</span></div>
+          <div class="fact"><b>5</b><span>workflow stages from seed to report</span></div>
+          <div class="fact"><b>2026-09-02</b><span>sitemap snapshot used for this page</span></div>
+        </div>
+      </div>
+      <figure class="product-shot">
+        <img src="https://mirofish.work/assets/examples/mirofish-environment-studio-clean.png" alt="MiroFish environment workspace with a relationship graph, agent personas, and simulation settings" width="1200" height="900" loading="eager" decoding="async">
+        <figcaption class="caption">MiroFish turns source material into graph context, simulated actors, reaction rounds, and a report people can question.</figcaption>
+      </figure>
+    </section>
+    <section class="answer-band" id="workflow">
+      <div class="shell answer-grid">
+        <div>
+          <p class="eyebrow">Direct answer</p>
+          <h2>What MiroFish is for</h2>
+          <p>MiroFish is useful when a decision depends on how different actors might react over time. Instead of asking for one flat answer, a run starts with source material, builds graph context, prepares agent personas, runs interaction rounds, and returns a structured report for review.</p>
+          <p>Use it as decision support: it can expose plausible reactions, weak assumptions, and follow-up questions, but important claims still need real evidence or accountable review.</p>
+          <div class="source-row" aria-label="Reference links">
+            <a href="https://github.com/666ghj/MiroFish" rel="noopener">Source repository</a>
+            <a href="https://mirofish.ai/" rel="noopener">Repository homepage</a>
+            <a href="https://666ghj.github.io/mirofish-demo/" rel="noopener">Static demo</a>
+          </div>
+        </div>
+        <div class="workflow" aria-label="MiroFish workflow">
+          <div class="step"><b>Seed</b><span>Start with a question, report, notes, or files that define the scenario boundary.</span></div>
+          <div class="step"><b>Graph</b><span>Extract entities, relationships, constraints, signals, and assumptions.</span></div>
+          <div class="step"><b>Agents</b><span>Create roles with motives, memory, and different positions inside the scenario.</span></div>
+          <div class="step"><b>Rounds</b><span>Let agents react, disagree, update, and surface branches that need review.</span></div>
+          <div class="step"><b>Report</b><span>Read the scenario report, then ask follow-up questions before acting.</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="shell intro">
+      <p class="eyebrow">MiroFish.work public page map</p>
+      <h2>All public MiroFish.work subpages in one route</h2>
+      <p>This index uses the public sitemap from <a href="https://mirofish.work/sitemap.xml" rel="noopener">mirofish.work/sitemap.xml</a>. It keeps the main product route, tutorial pages, simulation use cases, prediction library, and policy pages reachable from a single GitHub Pages URL.</p>
+    </section>
+
+      <section class="link-section" id="core">
+        <div class="section-head">
+          <p>5 routes</p>
+          <h2>Core MiroFish routes</h2>
+          <span>Start here for the product entry, pricing, resources, and policy pages.</span>
+        </div>
+        <ul class="route-grid">
+<li><a href="https://mirofish.work/" rel="noopener"><span>MiroFish homepage</span><b>Start</b></a></li>
+<li><a href="https://mirofish.work/pricing/" rel="noopener"><span>Pricing</span><b>Compare</b></a></li>
+<li><a href="https://mirofish.work/resources/" rel="noopener"><span>Resources</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/privacy/" rel="noopener"><span>Privacy</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/terms/" rel="noopener"><span>Terms</span><b>Explore</b></a></li>
+        </ul>
+      </section>
+
+      <section class="link-section" id="brand">
+        <div class="section-head">
+          <p>27 routes</p>
+          <h2>MiroFish brand and explanation pages</h2>
+          <span>Use these pages to understand the name, hosted app route, demo, cost, login, review, and language-specific pages.</span>
+        </div>
+        <ul class="route-grid">
+<li><a href="https://mirofish.work/mirofish-app/" rel="noopener"><span>MiroFish App</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-tutorial/" rel="noopener"><span>MiroFish Tutorial</span><b>Learn</b></a></li>
+<li><a href="https://mirofish.work/mirofish-offline/" rel="noopener"><span>MiroFish Offline</span><b>Build</b></a></li>
+<li><a href="https://mirofish.work/mirofish-ai-website/" rel="noopener"><span>MiroFish AI Website</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-russian/" rel="noopener"><span>MiroFish Russian</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-live/" rel="noopener"><span>MiroFish Live</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-trading/" rel="noopener"><span>MiroFish Trading</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-english/" rel="noopener"><span>MiroFish English</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-github/" rel="noopener"><span>MiroFish GitHub</span><b>Build</b></a></li>
+<li><a href="https://mirofish.work/mirofish-demo/" rel="noopener"><span>MiroFish Demo</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-how-to-use/" rel="noopener"><span>MiroFish How To Use</span><b>Learn</b></a></li>
+<li><a href="https://mirofish.work/mirofish-review/" rel="noopener"><span>MiroFish Review</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-vs/" rel="noopener"><span>MiroFish Vs</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/MiroFish-AI-prediction/" rel="noopener"><span>MiroFish AI Prediction</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/mirofish-ai/" rel="noopener"><span>MiroFish AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-founder/" rel="noopener"><span>MiroFish Founder</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-cost/" rel="noopener"><span>MiroFish Cost</span><b>Compare</b></a></li>
+<li><a href="https://mirofish.work/mirofish-ai-login/" rel="noopener"><span>MiroFish AI Login</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-chat/" rel="noopener"><span>MiroFish Chat</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-creator/" rel="noopener"><span>MiroFish Creator</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-skill/" rel="noopener"><span>MiroFish Skill</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-china/" rel="noopener"><span>MiroFish China</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-chinese-ai/" rel="noopener"><span>MiroFish Chinese AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-ai-english/" rel="noopener"><span>MiroFish AI English</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-ai-apk/" rel="noopener"><span>MiroFish AI APK</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/mirofish-ai-prediction-engine/" rel="noopener"><span>MiroFish AI Prediction Engine</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/mirofish-btc/" rel="noopener"><span>MiroFish BTC</span><b>Explore</b></a></li>
+        </ul>
+      </section>
+
+      <section class="link-section" id="workflow">
+        <div class="section-head">
+          <p>25 routes</p>
+          <h2>Simulation workflow and architecture</h2>
+          <span>These pages describe the agent workflow, graph layer, seed material, personas, report, and follow-up analysis.</span>
+        </div>
+        <ul class="route-grid">
+<li><a href="https://mirofish.work/ai-predictor/" rel="noopener"><span>AI Predictor</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/ai-simulator/" rel="noopener"><span>AI Simulator</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/multi-agent-simulation/" rel="noopener"><span>Multi Agent Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/scenario-prediction-chat/" rel="noopener"><span>Scenario Prediction Chat</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/ai-scenario-simulator/" rel="noopener"><span>AI Scenario Simulator</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/graphrag-agents/" rel="noopener"><span>GraphRAG Agents</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/financial-prediction/" rel="noopener"><span>Financial Prediction</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/graph-construction/" rel="noopener"><span>Graph Construction</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/predict-anything-ai/" rel="noopener"><span>Predict Anything AI</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/reportagent/" rel="noopener"><span>ReportAgent</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/seed-material/" rel="noopener"><span>Seed Material</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/simulation-report/" rel="noopener"><span>Simulation Report</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/agent-memory-knowledge-graph/" rel="noopener"><span>Agent Memory Knowledge Graph</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/agent-personas/" rel="noopener"><span>Agent Personas</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/ai-market-simulator/" rel="noopener"><span>AI Market Simulator</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/ai-prediction-engine/" rel="noopener"><span>AI Prediction Engine</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/follow-up-analysis/" rel="noopener"><span>Follow Up Analysis</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/scenario-prediction/" rel="noopener"><span>Scenario Prediction</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/simulated-people/" rel="noopener"><span>Simulated People</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/what-is-mirofish-ai/" rel="noopener"><span>What Is MiroFish AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/agent-based-simulation-ai/" rel="noopener"><span>Agent Based Simulation AI</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/generative-agent-simulation/" rel="noopener"><span>Generative Agent Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/llm-agent-simulation/" rel="noopener"><span>LLM Agent Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/multi-agent-scenario-simulation/" rel="noopener"><span>Multi Agent Scenario Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/what-if-scenario-generator-ai/" rel="noopener"><span>What If Scenario Generator AI</span><b>Explore</b></a></li>
+        </ul>
+      </section>
+
+      <section class="link-section" id="research">
+        <div class="section-head">
+          <p>40 routes</p>
+          <h2>Research, market, and audience simulation pages</h2>
+          <span>These pages are useful when a team wants to test reactions, market narratives, product concepts, or stakeholder behavior.</span>
+        </div>
+        <ul class="route-grid">
+<li><a href="https://mirofish.work/public-opinion-simulation-ai/" rel="noopener"><span>Public Opinion Simulation AI</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/prediction-market-ai/" rel="noopener"><span>Prediction Market AI</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/ai-trading-agents/" rel="noopener"><span>AI Trading Agents</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/market-narrative-research/" rel="noopener"><span>Market Narrative Research</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/public-opinion-analysis-ai/" rel="noopener"><span>Public Opinion Analysis AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/scenario-planning-ai/" rel="noopener"><span>Scenario Planning AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/trend-forecasting-ai/" rel="noopener"><span>Trend Forecasting AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/sports-event-prediction-ai/" rel="noopener"><span>Sports Event Prediction AI</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/policy-campaign-rehearsal/" rel="noopener"><span>Policy Campaign Rehearsal</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/story-world-character-simulation/" rel="noopener"><span>Story World Character Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/ai-focus-group/" rel="noopener"><span>AI Focus Group</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/ai-market-research-platform/" rel="noopener"><span>AI Market Research Platform</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/ai-personas-for-product-research/" rel="noopener"><span>AI Personas For Product Research</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/ai-survey-simulator/" rel="noopener"><span>AI Survey Simulator</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/audience-reaction-simulator/" rel="noopener"><span>Audience Reaction Simulator</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/brand-crisis-simulation/" rel="noopener"><span>Brand Crisis Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/campaign-reaction-simulation/" rel="noopener"><span>Campaign Reaction Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/competitive-strategy-simulation/" rel="noopener"><span>Competitive Strategy Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/competitor-response-simulation/" rel="noopener"><span>Competitor Response Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/consumer-behavior-simulation-ai/" rel="noopener"><span>Consumer Behavior Simulation AI</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/crisis-response-simulation/" rel="noopener"><span>Crisis Response Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/decision-rehearsal-ai/" rel="noopener"><span>Decision Rehearsal AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/go-to-market-simulation/" rel="noopener"><span>Go To Market Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/market-narrative-simulation/" rel="noopener"><span>Market Narrative Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/market-reaction-simulation/" rel="noopener"><span>Market Reaction Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/market-sentiment-simulation-ai/" rel="noopener"><span>Market Sentiment Simulation AI</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/message-testing-ai/" rel="noopener"><span>Message Testing AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/policy-impact-simulation/" rel="noopener"><span>Policy Impact Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/policy-simulation-ai/" rel="noopener"><span>Policy Simulation AI</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/pricing-change-simulation/" rel="noopener"><span>Pricing Change Simulation</span><b>Compare</b></a></li>
+<li><a href="https://mirofish.work/product-concept-testing-ai/" rel="noopener"><span>Product Concept Testing AI</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/product-launch-simulation/" rel="noopener"><span>Product Launch Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/public-reaction-simulator/" rel="noopener"><span>Public Reaction Simulator</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/risk-scenario-simulation/" rel="noopener"><span>Risk Scenario Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/stakeholder-simulation-ai/" rel="noopener"><span>Stakeholder Simulation AI</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/strategic-decision-simulation/" rel="noopener"><span>Strategic Decision Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/synthetic-audience-simulation/" rel="noopener"><span>Synthetic Audience Simulation</span><b>Simulate</b></a></li>
+<li><a href="https://mirofish.work/synthetic-customer-research/" rel="noopener"><span>Synthetic Customer Research</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/synthetic-persona-research/" rel="noopener"><span>Synthetic Persona Research</span><b>Explore</b></a></li>
+<li><a href="https://mirofish.work/virtual-focus-group-ai/" rel="noopener"><span>Virtual Focus Group AI</span><b>Explore</b></a></li>
+        </ul>
+      </section>
+
+      <section class="link-section" id="prediction-library">
+        <div class="section-head">
+          <p>14 routes</p>
+          <h2>Prediction library routes</h2>
+          <span>These topic pages route readers who search for concrete prediction examples and calculators.</span>
+        </div>
+        <ul class="route-grid">
+<li><a href="https://mirofish.work/predictions/" rel="noopener"><span>Predictions</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/nfl-predictions-simulator/" rel="noopener"><span>Predictions / NFL Predictions Simulator</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/powerball-predictions-for-next-draw/" rel="noopener"><span>Predictions / Powerball Predictions For Next Draw</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/powerball-prediction-for-today/" rel="noopener"><span>Predictions / Powerball Prediction For Today</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/baby-gender-predictor-quiz/" rel="noopener"><span>Predictions / Baby Gender Predictor Quiz</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/stock-prediction-calculator/" rel="noopener"><span>Predictions / Stock Prediction Calculator</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/football-predictions-tomorrow/" rel="noopener"><span>Predictions / Football Predictions Tomorrow</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/lottery-prediction-numbers/" rel="noopener"><span>Predictions / Lottery Prediction Numbers</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/crypto-price-prediction-calculator/" rel="noopener"><span>Predictions / Crypto Price Prediction Calculator</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/soccer-predictions-tomorrow/" rel="noopener"><span>Predictions / Soccer Predictions Tomorrow</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/lottery-prediction-for-today/" rel="noopener"><span>Predictions / Lottery Prediction For Today</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/football-predictions-ai/" rel="noopener"><span>Predictions / Football Predictions AI</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/predictions/powerball-prediction/" rel="noopener"><span>Predictions / Powerball Prediction</span><b>Predict</b></a></li>
+<li><a href="https://mirofish.work/soccer-predictions-ai/" rel="noopener"><span>Soccer Predictions AI</span><b>Predict</b></a></li>
+        </ul>
+      </section>
+    <section class="shell faq" id="faq">
+      <article>
+        <h3>Where should I start with MiroFish?</h3>
+        <p>Start at <a href="https://mirofish.work/" rel="noopener">mirofish.work</a> if you want a hosted product route, then use the tutorial and workflow pages when you need a narrower explanation.</p>
+      </article>
+      <article>
+        <h3>Is MiroFish a guaranteed forecast?</h3>
+        <p>No. Treat MiroFish output as scenario rehearsal and decision support. Use the report to find assumptions, branches, and validation steps before making a consequential decision.</p>
+      </article>
+      <article>
+        <h3>Which pages are included here?</h3>
+        <p>Every HTML page found in the current MiroFish.work sitemap snapshot is included. Image assets are not listed as pages, though the product image is used above as a visual reference.</p>
+      </article>
+      <article>
+        <h3>What about source code?</h3>
+        <p>The open-source repository is <a href="https://github.com/666ghj/MiroFish" rel="noopener">666ghj/MiroFish</a>, and the repository links to a static demo for interface and workflow review.</p>
+      </article>
+    </section>
+  </main>
+  <footer>
+    <div class="shell">Updated 2026-09-02. This page is a public MiroFish route map built from the MiroFish.work sitemap.</div>
+  </footer>
+</body>
+</html>
