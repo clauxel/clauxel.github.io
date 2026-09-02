@@ -96,7 +96,7 @@
       box-shadow: var(--shadow);
       margin-top: 18px;
     }
-    .product-shot img { display: block; width: 100%; height: auto; border-radius: 6px; object-fit: contain; }
+    .product-shot img { display: block; width: 100%; height: 360px; border-radius: 6px; object-fit: cover; object-position: 40% 50%; }
     .caption { margin: 10px 2px 2px; color: var(--muted); font-size: 13px; }
     .answer-band { border-block: 1px solid var(--line); background: #fff; }
     .answer-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 32px; padding: 42px 0; align-items: start; }
@@ -192,6 +192,7 @@
       .lead { font-size: 18px; }
       .facts, .workflow, .route-grid, .faq { grid-template-columns: 1fr; }
       .hero { padding-top: 36px; }
+      .product-shot img { height: 260px; }
     }
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://clauxel.github.io/mirofish/","url":"https://clauxel.github.io/mirofish/","name":"MiroFish page map and scenario simulation guide","description":"A public MiroFish guide and page map that links to the MiroFish.work sitemap routes, source repository, and core scenario simulation workflow.","dateModified":"2026-09-02","inLanguage":"en","about":{"@type":"SoftwareApplication","name":"MiroFish","applicationCategory":"AI prediction engine","url":"https://mirofish.work","sameAs":["https://github.com/666ghj/MiroFish","https://mirofish.ai/","https://666ghj.github.io/mirofish-demo/"]}},{"@type":"FAQPage","@id":"https://clauxel.github.io/mirofish/#faq","mainEntity":[{"@type":"Question","name":"What is MiroFish?","acceptedAnswer":{"@type":"Answer","text":"MiroFish is a multi-agent scenario simulation and AI prediction workflow that turns seed material into graph context, simulated agents, reaction rounds, and a report for review."}},{"@type":"Question","name":"Where should readers start?","acceptedAnswer":{"@type":"Answer","text":"Readers who want a hosted product route can start at mirofish.work. Readers who want source-code context can inspect the 666ghj/MiroFish repository and the static demo linked from that repository."}}]}]}</script>
